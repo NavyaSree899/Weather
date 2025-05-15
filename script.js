@@ -1,33 +1,27 @@
-function getWeather() {
-    const cityname = document.getElementById('city-name').value;
-    const apiKey = 'ENTER THE APIKEY';
-    const baseURL = 'ENTER THE URL';
-    const completeURL = `${baseURL}${cityname}&appid=${apiKey}&units=metric`; 
-  
+function fetchWeather() {
+    const apiKey = "7040ea904442a45d6950ba584410ce59";
+    const cityName = document.getElementById("cityInput").value;
+    const baseURL = "http://api.openweathermap.org/data/2.5/weather?q=";
+    const completeURL = baseURL + cityName + "&appid=" + apiKey + "&units=metric";
+
     fetch(completeURL)
-      .then(response => response.json())
-      .then(data => {
-        if (data.cod !== '404') {
-          const main = data.main;
-          const wind = data.wind;
-          const temperature = main.temp;
-          const humidity = main.humidity;
-          const wind_speed = wind.speed;
-          const weather_desc = data.weather[0].description;
-  
-          const weatherReport = `
-            <strong>Current Temperature:</strong> ${temperature}°C<br>
-            <strong>Humidity:</strong> ${humidity}%<br>
-            <strong>Wind Speed:</strong> ${wind_speed} m/s<br>
-            <strong>Weather Description:</strong> ${weather_desc}
-          `;
-          document.getElementById('weather-report').innerHTML = weatherReport;
-        } else {
-          document.getElementById('weather-report').innerHTML = 'City not found. Please try again.';
-        }
-      })
-      .catch(error => {
-        document.getElementById('weather-report').innerHTML = 'Error fetching weather data.';
-      });
-  }
-  
+        .then(response => response.json())
+        .then(data => {
+            const weatherResult = document.getElementById("weatherResult");
+            if (data.cod !== "404") {
+                const mainData = data.main;
+                const windData = data.wind;
+                weatherResult.innerHTML = `
+                    <h2>Weather Details for ${cityName}</h2>
+                    <p>Current Temperature: ${mainData.temp} °C</p>
+                    <p>Current Humidity: ${mainData.humidity} %</p>
+                    <p>Current Wind Speed: ${windData.speed} m/s</p>
+                `;
+            } else {
+                weatherResult.innerHTML = "City not found. Please check the city name and try again.";
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching weather data:", error);
+        });
+}
